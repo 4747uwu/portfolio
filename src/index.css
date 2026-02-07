@@ -1,0 +1,394 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Dark theme colors - True black */
+  --bg-dark: #000000;
+  --bg-darker: #000000;
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --accent-violet: #8b5cf6;
+  --accent-indigo: #6366f1;
+  
+  /* Japanese-inspired accent colors */
+  --accent-red: #ef4444;
+  --accent-red-dark: #dc2626;
+  --accent-red-light: #f87171;
+  
+  /* Japanese spacing system (8px grid) */
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+  --space-2xl: 64px;
+}
+
+/* Modern utilities */
+.inter {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Modern gradient text utilities */
+.gradient-text {
+  background: linear-gradient(to right, #ffffff, #a78bfa, #c084fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Utility animations */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+}
+
+/* Enhanced focus states */
+*:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.5);
+  outline-offset: 3px;
+}
+
+/* Selection styling */
+::selection {
+  background-color: rgba(139, 92, 246, 0.99);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: rgba(139, 92, 246, 0.99);
+  color: white;
+}
+
+
+/* //metric stuff here  */
+
+/* Modern Retro Metrics Styling */
+.retro-metrics-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.retro-metric-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.retro-scan-line {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.3), transparent);
+  margin-left: 0.75rem;
+}
+
+.retro-bar-container {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.retro-bar {
+  position: relative;
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced graph styling */
+.retro-graph {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.retro-glow-dot {
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+}
+
+/* Modern pulse animation */
+@keyframes retro-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.02);
+  }
+}
+
+.retro-number-pulse {
+  animation: retro-pulse 2s ease-in-out infinite;
+}
+
+/* Glass morphism utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Modern shadow utilities */
+.shadow-glow {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+.shadow-glow-lg {
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
+}
+
+.shadow-glow-hover {
+  transition: all 0.3s ease;
+}
+
+.shadow-glow-hover:hover {
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Responsive text utilities */
+@media (max-width: 768px) {
+  .inter {
+    font-size: 0.9em;
+  }
+  
+  h1, h2 {
+    font-size: 0.85em;
+  }
+}
+
+/* Japanese-inspired utilities */
+
+/* Vertical writing mode (for Japanese text) */
+.writing-mode-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+}
+
+/* Japanese accent borders */
+.border-accent-red {
+  border-color: var(--accent-red);
+}
+
+.border-l-accent {
+  border-left: 4px solid var(--accent-red);
+}
+
+.border-r-accent {
+  border-right: 4px solid var(--accent-red);
+}
+
+/* Japanese-inspired glass panel variants */
+.glass-panel-red {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 2px solid rgba(239, 68, 68, 0.5);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-panel-structured {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Japanese minimalist shadow */
+.shadow-japanese {
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Red glow utilities (Japanese lantern inspired) */
+.shadow-red-glow {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+.shadow-red-glow-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shadow-red-glow-hover:hover {
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+}
+
+/* Japanese-inspired animations (subdued, disciplined) */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes gentle-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Japanese-inspired layout utilities */
+.ma-space {
+  /* Ma (間) - negative space, fundamental to Japanese design */
+  padding: var(--space-lg);
+  margin: var(--space-md);
+}
+
+/* Subtle grid pattern (shoji screen inspired) */
+.bg-shoji-pattern {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Torii gate accent (red vertical lines) */
+.torii-accent::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, transparent, var(--accent-red), transparent);
+}
+
+/* Japanese number styling */
+.japanese-number {
+  font-feature-settings: 'tnum', 'lnum';
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: 0.05em;
+}
+
+/* Disciplined transitions (slower, more controlled) */
+.transition-disciplined {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-calm {
+  transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Selection styling with red accent */
+::selection {
+  background-color: rgba(239, 68, 68, 0.3);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: rgba(239, 68, 68, 0.3);
+  color: white;
+}
+
+/* Scrollbar styling (Japanese minimalist) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(239, 68, 68, 0.3);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(239, 68, 68, 0.5);
+}
