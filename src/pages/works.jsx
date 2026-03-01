@@ -1,390 +1,342 @@
 // src/pages/works.jsx
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useRef } from 'react';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import PixelBlast from '../components/hero/background';
-import MetricsDisplay from '../components/hero/MetricDisplay';
-import StarryBackground from '../components/hero/StarryBackground';
-import CircularBloomFireworks from '../components/hero/fireworks';
+import Tilt from 'react-parallax-tilt';
 
 const projects = [
   {
     id: 1,
     title: 'PACS',
-    subtitle: 'Picture Archiving and Communication System',
-    type: 'Healthcare / Medical Imaging Software',
-    tech: 'DICOM, JavaScript, React, Node.js, PostgreSQL',
+    role: 'Lead Engineer',
+    subtitle: 'Picture Archiving & Communication System',
+    type: 'Healthcare / Medical Imaging',
     description:
-      'A full-featured PACS solution used by radiology centers to store, retrieve, and manage medical imaging data securely. Designed for high availability and optimized DICOM processing, enabling hospitals to streamline diagnosis workflows.',
-    features: [
-      'DICOM image storage and retrieval with optimized load times (up to 40% faster)',
-      'User authentication and role-based access with audit logging',
-      'Advanced search and filtering across thousands of studies',
-      'Web-based viewer with zoom, pan, measurements, and annotation tools',
-      'Multi-modality support: CT, MRI, X-Ray, Ultrasound',
-      'HIPAA-like data handling and secure encrypted transfer'
+      'Production PACS solution used by radiology centers to store, retrieve, and manage medical imaging data. Designed for high availability and optimized DICOM processing.',
+    tech: ['React', 'Node.js', 'PostgreSQL', 'DICOM', 'Docker', 'NGINX'],
+    metrics: [
+      { label: 'Daily Users', value: '120+' },
+      { label: 'Files/Month', value: '50K+' },
+      { label: 'Faster Loads', value: '40%' }
     ],
-    metrics: {
-      users: 'Used by 120+ daily radiologists/clinicians',
-      performance: 'Processes and indexes 50,000+ DICOM files per month',
-      impact: 'Reduced diagnostic turnaround time by ~35%'
-    }
+    highlights: [
+      'DICOM viewer with zoom, pan, measurements, annotations',
+      'Multi-modality: CT, MRI, X-Ray, Ultrasound',
+      'HIPAA-compliant data handling and encrypted transfer',
+      'Role-based access with audit logging'
+    ],
+    color: 'cyan',
+    gradient: 'from-cyan-500/20 via-transparent to-transparent'
   },
   {
     id: 2,
     title: 'Rivora',
-    subtitle: 'Task Management Platform',
+    role: 'Creator',
+    subtitle: 'Task Management SaaS Platform',
     type: 'SaaS / Productivity',
-    tech: 'React, Node.js, PostgreSQL, MongoDB, Docker',
     description:
-      'Rivora is a modern SaaS platform designed to streamline task management for teams. It provides advanced analytics, automation, and collaboration features to improve productivity and visibility across workflows.',
-    features: [
-      'Real-time notifications for task updates and deadlines',
-      'Analytics dashboard with productivity insights and team performance metrics',
-      'Collaborative workspaces with role-based permissions',
-      'Drag-and-drop task management with Kanban and List views',
-      'Automated task reminders and daily summaries'
+      'Modern task management platform with real-time sync, analytics dashboards, and workflow automation for teams.',
+    tech: ['React', 'Node.js', 'PostgreSQL', 'MongoDB', 'Docker', 'WebSocket'],
+    metrics: [
+      { label: 'Active Users', value: '1,400+' },
+      { label: 'Organizations', value: '20+' },
+      { label: 'Productivity', value: '+22%' }
     ],
-    metrics: {
-      users: '1400+ active users across 20+ organizations',
-      performance: 'Handles 50,000+ tasks/month with real-time sync',
-      impact: 'Improves team productivity by an estimated 22%'
-    }
+    highlights: [
+      'Real-time Kanban and list views with drag-and-drop',
+      'Analytics dashboard with team performance metrics',
+      'Automated task reminders and daily summaries',
+      'Collaborative workspaces with role-based permissions'
+    ],
+    color: 'emerald',
+    gradient: 'from-emerald-500/20 via-transparent to-transparent'
   },
   {
     id: 3,
     title: 'Breakup App',
-    subtitle: 'Emotional Wellness Platform',
-    type: 'Social / Lifestyle App',
-    tech: 'React Native, Firebase, Node.js',
+    role: 'Creator',
+    subtitle: 'Emotional Wellness Mobile App',
+    type: 'Mobile / Lifestyle',
     description:
-      'A mobile emotional-wellness app helping users navigate breakups through guided exercises, mood tracking, self-care reminders, and a supportive anonymous community.',
-    features: [
-      'Personalized advice and coping exercises based on user mood',
-      'Daily mood tracking and journals with AI-assisted insights',
-      'Anonymous community sharing and discussion spaces',
-      'Self-care reminders and habit tracking',
-      'Gamified healing progress system'
+      'Mobile app helping users navigate breakups through guided exercises, AI-assisted mood tracking, and anonymous community support.',
+    tech: ['React Native', 'Firebase', 'Node.js', 'AI/ML'],
+    metrics: [
+      { label: 'Downloads', value: '30K+' },
+      { label: 'Avg Session', value: '6.4m' },
+      { label: 'Score Improvement', value: '+18%' }
     ],
-    metrics: {
-      users: '30,000+ downloads in first 90 days',
-      engagement: 'Average session length: 6.4 minutes',
-      impact: 'Helped improve reported emotional scores by ~18% over 30 days'
-    }
+    highlights: [
+      'AI-assisted mood insights and personalized exercises',
+      'Anonymous community sharing and discussion',
+      'Gamified healing progress system',
+      'Daily self-care reminders and habit tracking'
+    ],
+    color: 'amber',
+    gradient: 'from-amber-500/20 via-transparent to-transparent'
   }
 ];
 
+const colorMap = {
+  cyan: {
+    border: 'hover:border-cyan-500/30',
+    tag: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
+    badge: 'bg-cyan-500/15 text-cyan-300',
+    metric: 'text-cyan-400',
+    dot: 'bg-cyan-400',
+    glow: 'group-hover:shadow-cyan-500/10',
+    glowBorder: 'rgba(34, 211, 238, 0.3)',
+  },
+  emerald: {
+    border: 'hover:border-emerald-500/30',
+    tag: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+    badge: 'bg-emerald-500/15 text-emerald-300',
+    metric: 'text-emerald-400',
+    dot: 'bg-emerald-400',
+    glow: 'group-hover:shadow-emerald-500/10',
+    glowBorder: 'rgba(16, 185, 129, 0.3)',
+  },
+  amber: {
+    border: 'hover:border-amber-500/30',
+    tag: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    badge: 'bg-amber-500/15 text-amber-300',
+    metric: 'text-amber-400',
+    dot: 'bg-amber-400',
+    glow: 'group-hover:shadow-amber-500/10',
+    glowBorder: 'rgba(245, 158, 11, 0.3)',
+  }
+};
 
-export default function Works() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+// Mouse spotlight effect
+function SpotlightCard({ children, className, glowColor }) {
+  const divRef = useRef(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? projects.length - 1 : prev - 1));
+  const handleMouseMove = (e) => {
+    const rect = divRef.current?.getBoundingClientRect();
+    if (rect) {
+      mouseX.set(e.clientX - rect.left);
+      mouseY.set(e.clientY - rect.top);
+    }
   };
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev === projects.length - 1 ? 0 : prev + 1));
-  };
-
-  const currentProject = projects[currentIndex];
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: false, amount: 0.3 }}
-      transition={{ duration: 0.8 }}
-      className="relative min-h-screen w-full bg-black py-3 md:py-4 lg:py-6 overflow-hidden"
+    <div
+      ref={divRef}
+      onMouseMove={handleMouseMove}
+      className={`relative ${className}`}
     >
-      {/* Starry Background - Pure black with twinkling stars */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <StarryBackground />
-      </div>
-      
-      {/* Fireworks background layer */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-30">
-        <CircularBloomFireworks />
-      </div>
-      
-      {/* Subtle PixelBlast background with black theme */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-10">
-        <PixelBlast
-          variant="circle"
-          pixelSize={6}
-          color="#ef4444"
-          patternScale={5}
-          patternDensity={0.2}
-          pixelSizeJitter={0.5}
-          enableRipples={false}
-          transparent
-          edgeFade={0.5}
-        />
-      </div>
-      
-      {/* Carbon fiber texture overlay (subtle) */}
-      <div className="absolute inset-0 z-0 opacity-5" style={{
-        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)',
-      }} />
-
-      {/* Vertical accent lines - Japanese shoji screen inspired - hidden on mobile */}
-      <div className="hidden md:block absolute left-6 lg:left-12 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-red-500/30 to-transparent z-0" />
-      <div className="hidden md:block absolute right-6 lg:right-12 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-violet-500/30 to-transparent z-0" />
-      
-      {/* Racing stripes - Japanese car culture (JDM inspired) - responsive */}
-      <motion.div 
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ duration: 1.5, ease: "easeOut" }}
-        className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-red-500 to-transparent z-0 origin-left" 
+      <motion.div
+        className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{
+          background: useTransform(
+            [mouseX, mouseY],
+            ([x, y]) => `radial-gradient(400px circle at ${x}px ${y}px, ${glowColor || 'rgba(34, 211, 238, 0.06)'}, transparent 60%)`
+          ),
+        }}
       />
-      
-      {/* Main container - ultra compact */}
-      <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
-        
-        {/* Header Section - Japanese car culture inspired - responsive */}
-        <motion.div 
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mb-4 md:mb-6 lg:mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+      {children}
+    </div>
+  );
+}
+
+function ProjectCard({ project, index }) {
+  const [expanded, setExpanded] = useState(false);
+  const colors = colorMap[project.color];
+
+  return (
+    <Tilt
+      tiltMaxAngleX={4}
+      tiltMaxAngleY={4}
+      glareEnable={true}
+      glareMaxOpacity={0.08}
+      glareColor={colors.glowBorder}
+      glarePosition="all"
+      glareBorderRadius="12px"
+      scale={1.01}
+      transitionSpeed={1500}
+      className="w-full"
+    >
+      <SpotlightCard glowColor={`${colors.glowBorder.replace('0.3', '0.08')}`}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.5, delay: index * 0.1 }}
+          onClick={() => setExpanded(!expanded)}
+          className={`group relative bg-[#141414] border border-white/6 rounded-xl p-5 sm:p-6 md:p-7 cursor-pointer transition-all duration-300 ${colors.border} hover:bg-[#1a1a1a] ${colors.glow} hover:shadow-xl overflow-hidden`}
         >
-          <div className="flex items-center gap-2 md:gap-4 lg:gap-5">
-            {/* Vertical Japanese-style text indicator with speed lines - hidden on mobile */}
-            <div className="hidden sm:flex flex-col items-center gap-1 relative">
-              <motion.div 
-                animate={{ scaleY: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="w-0.5 h-8 md:h-10 bg-gradient-to-b from-red-500 to-orange-500" 
-              />
-              <span className="text-[9px] md:text-[10px] text-gray-500 tracking-[0.3em] writing-mode-vertical">WORKS</span>
-              {/* Speed indicator lines (JDM style) */}
-              <div className="absolute -right-2 top-3 flex flex-col gap-0.5">
-                <div className="w-2 md:w-3 h-px bg-red-500/50" />
-                <div className="w-3 md:w-4 h-px bg-red-500/30" />
-                <div className="w-1.5 md:w-2 h-px bg-red-500/20" />
-              </div>
-            </div>
-            
+          {/* Animated gradient corner */}
+          <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${project.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
+
+          {/* Header */}
+          <div className="flex items-start justify-between mb-4 relative z-10">
             <div>
-              <motion.h1 
-                animate={{ 
-                  textShadow: [
-                    "0 0 20px rgba(239, 68, 68, 0.3)",
-                    "0 0 30px rgba(239, 68, 68, 0.2)",
-                    "0 0 20px rgba(239, 68, 68, 0.3)"
-                  ]
-                }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-0.5 md:mb-1 tracking-tight"
-              >
-                作品集
-              </motion.h1>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-400 tracking-wide">Selected Projects</p>
-              {/* Animated racing stripes */}
-              <div className="flex gap-1 mt-1 md:mt-2">
-                <motion.div 
-                  animate={{ scaleX: [1, 1.1, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-8 md:w-12 lg:w-14 h-0.5 bg-red-500 origin-left" 
-                />
-                <motion.div 
-                  animate={{ scaleX: [1, 1.1, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-                  className="w-6 md:w-8 lg:w-10 h-0.5 bg-orange-500 origin-left" 
-                />
-                <motion.div 
-                  animate={{ scaleX: [1, 1.1, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
-                  className="w-4 md:w-6 h-0.5 bg-violet-500 origin-left" 
-                />
+              <div className="flex items-center gap-2 mb-2">
+                <span className={`px-2 py-0.5 text-[10px] font-mono font-medium rounded ${colors.badge}`}>
+                  {project.role}
+                </span>
+                <span className="text-[10px] text-gray-600 font-mono">{project.type}</span>
               </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">{project.title}</h3>
+              <p className="text-sm text-gray-500 mt-1">{project.subtitle}</p>
             </div>
+            <motion.div
+              animate={{ rotate: expanded ? 45 : 0 }}
+              className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-gray-500 group-hover:text-white transition-colors flex-shrink-0 ml-4"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </motion.div>
           </div>
 
-          {/* Project counter with speedometer style - compact */}
-          <div className="text-right relative">
-            <motion.div 
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-1 -right-1 w-1.5 h-1.5 md:w-2 md:h-2 bg-red-500 rounded-full"
-            />
-            <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-0.5 tabular-nums">
-              {String(currentIndex + 1).padStart(2, '0')}
-            </div>
-            <div className="text-[10px] md:text-xs text-gray-500 tracking-[0.2em]">
-              / {String(projects.length).padStart(2, '0')}
-            </div>
+          {/* Description */}
+          <p className="text-sm text-gray-400 leading-relaxed mb-4 relative z-10">{project.description}</p>
+
+          {/* Metrics row */}
+          <div className="grid grid-cols-3 gap-3 mb-4 relative z-10">
+            {project.metrics.map((m, i) => (
+              <div key={i} className="bg-white/3 rounded-lg p-2.5 text-center border border-white/3 hover:border-white/8 transition-colors">
+                <div className={`text-lg sm:text-xl font-bold font-mono ${colors.metric}`}>{m.value}</div>
+                <div className="text-[10px] text-gray-600 uppercase tracking-wider mt-0.5">{m.label}</div>
+              </div>
+            ))}
           </div>
-        </motion.div>
 
-        {/* Project Display - Card Grid Layout - Ultra compact and responsive */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentIndex}
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -40 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-4 lg:gap-5"
-          >
-            {/* Left Side - Project Info - full width on mobile */}
-            <div className="lg:col-span-5 space-y-3 md:space-y-4 lg:space-y-5">
-              {/* Project Title Card - compact */}
-              <div className="bg-black/80 backdrop-blur-2xl border-l-2 md:border-l-3 border-red-500 border-r border-r-white/10 border-t border-t-white/10 border-b border-b-white/10 p-3 sm:p-4 md:p-5 relative overflow-hidden group shadow-2xl">
-                <div className="absolute top-0 right-0 w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-red-500/20 to-transparent" />
-                
-                <div className="relative z-10">
-                  <span className="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-[0.2em] block mb-1.5 md:mb-2">
-                    {currentProject.type}
-                  </span>
-                  
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 md:mb-3 leading-tight">
-                    {currentProject.title}
-                  </h2>
-                  
-                  <p className="text-sm sm:text-base md:text-lg text-gray-400 mb-3 md:mb-4">
-                    {currentProject.subtitle}
-                  </p>
+          {/* Tech tags */}
+          <div className="flex flex-wrap gap-1.5 mb-2 relative z-10">
+            {project.tech.map((tech, i) => (
+              <span
+                key={i}
+                className={`px-2 py-0.5 text-[11px] font-mono rounded border ${colors.tag} transition-all hover:scale-105`}
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
 
-                  <div className="flex flex-wrap gap-1 md:gap-1.5">
-                    {currentProject.tech.split(', ').map((tech, idx) => (
-                      <span 
-                        key={idx}
-                        className="px-1.5 md:px-2 py-0.5 bg-black/60 border border-red-500/30 text-[9px] md:text-[10px] text-gray-300 hover:border-red-500/50 transition-colors"
+          {/* Expandable highlights */}
+          <AnimatePresence>
+            {expanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden relative z-10"
+              >
+                <div className="pt-4 mt-4 border-t border-white/6">
+                  <p className="text-[11px] text-gray-600 uppercase tracking-wider font-mono mb-3">Key Features</p>
+                  <div className="space-y-2">
+                    {project.highlights.map((h, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.08 }}
+                        className="flex items-start gap-2"
                       >
-                        {tech}
-                      </span>
+                        <span className={`w-1.5 h-1.5 rounded-full ${colors.dot} mt-1.5 flex-shrink-0`} />
+                        <span className="text-sm text-gray-300">{h}</span>
+                      </motion.div>
                     ))}
                   </div>
                 </div>
-              </div>
-
-              {/* Description - compact */}
-              <div className="bg-black/80 backdrop-blur-2xl border-l-2 md:border-l-3 border-violet-500 border-r border-r-white/10 border-t border-t-white/10 border-b border-b-white/10 p-3 sm:p-4 md:p-5 shadow-2xl">
-                <p className="text-xs md:text-sm text-gray-300 leading-relaxed mb-3 md:mb-4">
-                  {currentProject.description}
-                </p>
-                
-                {/* Metrics */}
-                <MetricsDisplay metrics={currentProject.metrics} />
-              </div>
-            </div>
-
-            {/* Right Side - Features Grid - full width on mobile, compact */}
-            <div className="lg:col-span-7 space-y-3">
-              <div className="bg-black/80 backdrop-blur-2xl border-l-2 md:border-l-3 border-orange-500 border-r border-r-white/10 border-t border-t-white/10 border-b border-b-white/10 p-3 sm:p-4 md:p-5 h-full shadow-2xl">
-                <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
-                  <div className="w-6 md:w-8 h-px bg-gradient-to-r from-red-500 to-transparent" />
-                  <h3 className="text-[10px] md:text-xs text-gray-400 uppercase tracking-[0.2em]">Key Features</h3>
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
-                  {currentProject.features.map((feature, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: idx * 0.1 }}
-                      className="bg-black/60 border border-white/20 p-2 md:p-3 hover:border-red-500/70 hover:bg-black/80 transition-all group"
-                    >
-                      <div className="flex items-start gap-1.5 md:gap-2">
-                        <div className="w-4 h-4 md:w-5 md:h-5 flex items-center justify-center bg-red-500/30 text-red-400 text-[9px] md:text-[10px] font-bold flex-shrink-0 mt-0.5 border border-red-500/50">
-                          {String(idx + 1).padStart(2, '0')}
-                        </div>
-                        <p className="text-[10px] md:text-xs text-gray-300 leading-relaxed group-hover:text-white transition-colors">
-                          {feature}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Navigation - ultra compact and responsive */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-4 md:mt-6 lg:mt-8"
-        >
-          {/* Progress bar - JDM speedometer inspired - full width on mobile */}
-          <div className="flex-1 max-w-full sm:max-w-md">
-            <div className="flex gap-1 md:gap-1.5">
-              {projects.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentIndex(idx)}
-                  className="relative h-0.5 md:h-1 flex-1 bg-black/60 border border-white/20 overflow-hidden group hover:border-red-500/50 transition-colors"
-                >
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-red-500 via-orange-500 to-violet-500"
-                    initial={false}
-                    animate={{
-                      scaleX: idx === currentIndex ? 1 : 0,
-                      originX: 0
-                    }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Navigation buttons - JDM racing inspired - responsive */}
-          <div className="flex gap-2 md:gap-3 justify-center sm:justify-start">
-            <motion.button
-              onClick={handlePrev}
-              whileHover={{ x: -8, boxShadow: "0 0 20px rgba(239, 68, 68, 0.4)" }}
-              whileTap={{ scale: 0.9 }}
-              className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 bg-white/5 backdrop-blur-xl border-l-2 md:border-l-3 border-l-red-500 border-r border-r-white/10 border-t border-t-white/10 border-b border-b-white/10 hover:border-l-red-400 flex items-center justify-center text-white transition-all relative overflow-hidden group"
-            >
-              {/* Racing stripe animation on hover */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-transparent"
-                initial={{ x: '-100%' }}
-                whileHover={{ x: '100%' }}
-                transition={{ duration: 0.5 }}
-              />
-              <svg className="w-4 h-4 md:w-5 md:h-5 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </motion.button>
-            
-            <motion.button
-              onClick={handleNext}
-              whileHover={{ x: 8, boxShadow: "0 0 30px rgba(239, 68, 68, 0.6)" }}
-              whileTap={{ scale: 0.9 }}
-              className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center text-white transition-all hover:shadow-lg hover:shadow-red-500/50 relative overflow-hidden group border-l-2 md:border-l-3 border-l-red-600"
-            >
-              {/* Speed lines animation */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                animate={{ x: ['-100%', '200%'] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-              />
-              <svg className="w-4 h-4 md:w-5 md:h-5 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </motion.button>
-          </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
+      </SpotlightCard>
+    </Tilt>
+  );
+}
+
+// Text scramble effect for section header
+function ScrambleText({ text, className }) {
+  const [displayText, setDisplayText] = useState(text);
+  const [isScrambling, setIsScrambling] = useState(false);
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+
+  const scramble = () => {
+    if (isScrambling) return;
+    setIsScrambling(true);
+    let iteration = 0;
+    const interval = setInterval(() => {
+      setDisplayText(
+        text.split('').map((char, i) => {
+          if (char === ' ' || char === "'") return char;
+          if (i < iteration) return text[i];
+          return chars[Math.floor(Math.random() * chars.length)];
+        }).join('')
+      );
+      iteration += 1 / 2;
+      if (iteration >= text.length) {
+        clearInterval(interval);
+        setDisplayText(text);
+        setIsScrambling(false);
+      }
+    }, 30);
+  };
+
+  return (
+    <span className={className} onMouseEnter={scramble} style={{ cursor: 'default' }}>
+      {displayText}
+    </span>
+  );
+}
+
+export default function Works() {
+  return (
+    <section id="work" className="relative py-20 sm:py-28 bg-[#0a0a0a] overflow-hidden">
+      {/* PixelBlast — subtle interactive WebGL particle texture */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.06]">
+        <PixelBlast
+          variant="circle"
+          pixelSize={5}
+          color="#22d3ee"
+          patternScale={4}
+          patternDensity={0.3}
+          pixelSizeJitter={0.4}
+          enableRipples={false}
+          speed={0.3}
+          edgeFade={0.4}
+          transparent
+        />
       </div>
 
-      {/* Decorative corner elements with racing accent - hidden on mobile, smaller on tablet */}
-      <motion.div 
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
-        className="hidden md:block absolute top-8 md:top-10 lg:top-12 left-0 w-8 h-8 md:w-12 md:h-12 lg:w-14 lg:h-14 border-t-2 border-l-2 border-red-500/30 z-0" 
-      />
-      <motion.div 
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.8, delay: 0.7 }}
-        className="hidden md:block absolute bottom-8 md:bottom-10 lg:bottom-12 right-0 w-8 h-8 md:w-12 md:h-12 lg:w-14 lg:h-14 border-b-2 border-r-2 border-violet-500/30 z-0" 
-      />
-    </motion.div>
+      {/* Section Header */}
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-12 sm:mb-16"
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-cyan-400 font-mono text-sm">02.</span>
+            <div className="w-12 h-px bg-gradient-to-r from-cyan-500/50 to-transparent" />
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-3">
+            <ScrambleText text="Things I've Built" />
+          </h2>
+          <p className="text-gray-500 text-base sm:text-lg max-w-xl">
+            Production systems, SaaS platforms, and apps — each solving real problems for real users.
+          </p>
+        </motion.div>
+
+        {/* Project Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
+          {/* PACS takes full width on large screens */}
+          <div className="lg:col-span-2">
+            <ProjectCard project={projects[0]} index={0} />
+          </div>
+          {/* Rivora and Breakup App side by side */}
+          <ProjectCard project={projects[1]} index={1} />
+          <ProjectCard project={projects[2]} index={2} />
+        </div>
+      </div>
+    </section>
   );
 }

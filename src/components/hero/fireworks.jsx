@@ -12,7 +12,7 @@ export default function CircularBloomFireworks() {
     if (!trace || !live || !container) return;
 
     const DPR = window.devicePixelRatio || 1;
-    
+
     // Get actual viewport size
     const updateSize = () => {
       const WIDTH = window.innerWidth;
@@ -72,16 +72,16 @@ export default function CircularBloomFireworks() {
       });
     }
 
-    // Japanese-inspired color palette (lanterns, cherry blossoms, shrine colors)
+    // Palette matched to portfolio design system
     const colors = [
-      '#ef4444', // red
-      '#f97316', // orange
-      '#eab308', // yellow
-      '#ec4899', // pink
-      '#a855f7', // purple
-      '#8b5cf6', // violet
-      '#f472b6', // light pink
-      '#fb923c'  // light orange
+      '#22d3ee', // cyan
+      '#06b6d4', // dark cyan
+      '#10b981', // emerald
+      '#34d399', // light emerald
+      '#f59e0b', // amber
+      '#fbbf24', // light amber
+      '#67e8f9', // sky cyan
+      '#6ee7b7'  // mint
     ];
 
     function explode(r) {
@@ -213,12 +213,12 @@ export default function CircularBloomFireworks() {
 
   return (
     <div ref={containerRef} className="absolute inset-0 pointer-events-none z-0">
-      <canvas 
-        ref={traceRef} 
+      <canvas
+        ref={traceRef}
         className="absolute inset-0"
       />
-      <canvas 
-        ref={liveRef} 
+      <canvas
+        ref={liveRef}
         className="absolute inset-0"
       />
     </div>
